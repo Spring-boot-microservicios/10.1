@@ -27,7 +27,7 @@ public class Main {
 
         var randomId = UUID.randomUUID().toString();
         var bookingDto = new BookingDto(
-                "1.1",
+                randomId,
                 LocalDate.of(2023, 06, 10),
                 LocalDate.of(2023, 06, 20),
                 2,
