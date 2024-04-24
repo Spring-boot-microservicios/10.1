@@ -70,10 +70,27 @@ public class BookingServiceTest {
         when(this.roomServiceMock.findAvailableRoom(any(BookingDto.class)))
                 .thenReturn(DataDummy.default_rooms_list.stream().findFirst().get());
 
+        // Si se llama el metodo real
         when(this.bookingRepositoryMock.save(any(BookingDto.class)))
                 .thenReturn(roomId);
 
         var result = this.bookingService.booking(DataDummy.default_booking_req_2);
+
+        assertEquals(roomId, result);
+    }
+
+    @Test
+    @DisplayName("booking should works - doReturn()")
+    public void bookingDoReturn() {
+        final var roomId = UUID.randomUUID().toString();
+
+        // No se llama el metodo real - 100% mock
+        doReturn(DataDummy.default_rooms_list.stream().findFirst().get())
+                .when(this.roomServiceMock).findAvailableRoom(DataDummy.default_booking_req_1);
+
+        doReturn(roomId).when(this.bookingRepositoryMock).save(DataDummy.default_booking_req_1);
+
+        var result = this.bookingService.booking(DataDummy.default_booking_req_1);
 
         assertEquals(roomId, result);
     }
