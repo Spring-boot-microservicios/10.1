@@ -90,6 +90,10 @@ public class BookingServiceTest {
 
         doReturn(roomId).when(this.bookingRepositoryMock).save(DataDummy.default_booking_req_1);
 
+        // Llamar a metodos void
+        doNothing()
+                .when(this.roomServiceMock).bookRoom(anyString());
+
         var result = this.bookingService.booking(DataDummy.default_booking_req_1);
 
         assertEquals(roomId, result);
@@ -98,6 +102,9 @@ public class BookingServiceTest {
         // times() // para saber el numero de veces que se debe llamar el metodo
         verify(this.roomServiceMock, times(1)).findAvailableRoom(any(BookingDto.class));
         verify(this.bookingRepositoryMock, times(1)).save(any(BookingDto.class));
+
+        // Verificar y testear el metodo void
+        verify(this.roomServiceMock, times(1)).bookRoom(anyString());
     }
 
 }
