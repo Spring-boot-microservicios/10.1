@@ -35,7 +35,7 @@ public class BookingServiceTest {
     private MailHelper mailHelperMock;
 
     @Captor
-    private ArgumentCaptor<String> stringCapture;
+    private ArgumentCaptor<String> stringCapture; // metodos void
 
     @InjectMocks
     private BookingService bookingService;
@@ -145,6 +145,9 @@ public class BookingServiceTest {
         doNothing()
                 .when(this.roomServiceMock).bookRoom(anyString());
 
+        // Para mejorar el coverage
+        doNothing().when(this.mailHelperMock).sendMail(anyString(), anyString());
+
         var result = this.bookingService.booking(DataDummy.default_booking_req_1);
 
         assertEquals(roomId, result);
@@ -156,6 +159,9 @@ public class BookingServiceTest {
 
         // Verificar y testear el metodo void
         verify(this.roomServiceMock, times(1)).bookRoom(anyString());
+
+        // Mejorar el coverage
+        verify(this.mailHelperMock, times(1)).sendMail(anyString(), anyString());
     }
 
     @Test
