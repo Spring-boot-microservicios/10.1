@@ -139,13 +139,20 @@ public class BookingServiceTest {
     @Test
     @DisplayName("booking unhappyPath should works")
     public void bookingUnHappyPath() {
-        final var roomId = UUID.randomUUID().toString();
 
         doReturn(DataDummy.default_rooms_list.stream().findFirst().get())
                 .when(this.roomServiceMock).findAvailableRoom(DataDummy.default_booking_req_3);
 
+//        doThrow(new IllegalArgumentException("Max 3 guest"))
+//                .when(this.paymentServiceMock).pay(any(BookingDto.class), anyDouble());
+
+        // Otra forma de obtener excepciones
+//        when(this.paymentServiceMock.pay(any(BookingDto.class), anyDouble()))
+//                .thenThrow(new IllegalArgumentException("Max 3 guest"));
+
+        // eq() => es un equals() el argumento es igual a..
         doThrow(new IllegalArgumentException("Max 3 guest"))
-                .when(this.paymentServiceMock).pay(any(BookingDto.class), anyDouble());
+                .when(this.paymentServiceMock).pay(eq(DataDummy.default_booking_req_3), eq(320.0));
 
         Executable executable = () -> this.bookingService.booking(DataDummy.default_booking_req_3);
 
