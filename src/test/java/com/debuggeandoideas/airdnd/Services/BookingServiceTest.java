@@ -1,6 +1,7 @@
 package com.debuggeandoideas.airdnd.Services;
 
 import com.debuggeandoideas.airdnd.dto.BookingDto;
+import com.debuggeandoideas.airdnd.dto.RoomDto;
 import com.debuggeandoideas.airdnd.helpers.MailHelper;
 import com.debuggeandoideas.airdnd.repositories.BookingRepository;
 import com.debuggeandoideas.airdnd.utils.CurrencyConverter;
@@ -18,6 +19,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
@@ -190,6 +193,11 @@ public class BookingServiceTest {
     @Test
     @DisplayName("unbook should works")
     public void unBook() {
+
+        // USO DE DBB => Behavior Driven Development (Desarrollo guiado por comportamiento)
+        // Given-When-Then
+
+        // GIVEN => dados estos datos..
         String id_1 = "id1";
         String id_2 = "id2";
 
@@ -199,6 +207,7 @@ public class BookingServiceTest {
         BookingDto bookingResp_2 = DataDummy.default_booking_req_2;
         bookingResp_2.setRoom(DataDummy.default_rooms_list.get(4));
 
+        // WHEN => cuando mande a llamar al metodo tal..
         when(this.bookingRepositoryMock.findById(anyString()))
                 .thenReturn(bookingResp_1)
                 .thenReturn(bookingResp_2);
@@ -209,6 +218,7 @@ public class BookingServiceTest {
         this.bookingService.unbook(id_1);
         this.bookingService.unbook(id_2);
 
+        // THEN => entonces mando a llamar al servicio con estos resultados
         verify(this.roomServiceMock, times(2)).unbookRoom(anyString());
         verify(this.bookingRepositoryMock, times(2)).deleteById(anyString());
 
@@ -234,6 +244,25 @@ public class BookingServiceTest {
 
             assertEquals(expected, response);
         }
+    }
+
+
+    // USO DE DBB => Behavior Driven Development (Desarrollo guiado por comportamiento)
+    // Given-When-Then
+    @Test
+    public void shouldCountAvailablePlaces() {
+        // GIVEN => dados estos datos..
+        given(this.roomServiceMock.findAllAvailableRooms())
+                .willReturn(Collections.singletonList(new RoomDto("A1", 2)));
+
+        var expected = 2;
+
+        // WHEN => cuando mande a llamar al metodo tal..
+        int response = this.bookingService.getAvailablePlaceCount();
+
+        // THEN => entonces mando a llamar al servicio con estos resultados
+        then(roomServiceMock).should(times(1)).findAllAvailableRooms();
+        assertEquals(expected, response);
     }
 
 }
