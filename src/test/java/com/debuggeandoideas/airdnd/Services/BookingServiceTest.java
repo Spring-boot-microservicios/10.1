@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
@@ -26,10 +27,10 @@ public class BookingServiceTest {
     @Mock
     private RoomService roomServiceMock;
 
-    @Mock
+    @Spy // Sirve para utilizar literal el metodo a usar
     private BookingRepository bookingRepositoryMock;
 
-    @Mock
+    @Mock // Simula completamente el metodo
     private MailHelper mailHelperMock;
 
     @InjectMocks
