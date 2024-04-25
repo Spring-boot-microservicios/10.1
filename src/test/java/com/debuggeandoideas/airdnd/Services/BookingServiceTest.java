@@ -3,6 +3,7 @@ package com.debuggeandoideas.airdnd.Services;
 import com.debuggeandoideas.airdnd.dto.BookingDto;
 import com.debuggeandoideas.airdnd.helpers.MailHelper;
 import com.debuggeandoideas.airdnd.repositories.BookingRepository;
+import com.debuggeandoideas.airdnd.utils.CurrencyConverter;
 import com.debuggeandoideas.airdnd.utils.DataDummy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -214,5 +215,19 @@ public class BookingServiceTest {
         assertEquals(List.of(id_1, id_2), this.stringCapture.getAllValues());
     }
 
+    @Test
+    @DisplayName("currencyConverter should works")
+    public void currencyConverter() {
+        try (MockedStatic<CurrencyConverter> mockStatic = mockStatic(CurrencyConverter.class)) {
+            final var expected = 900.0;
+
+            mockStatic.when(() -> CurrencyConverter.toMx(anyDouble()))
+                    .thenReturn(expected);
+
+            var response = this.bookingService.calculateInMxn(DataDummy.default_booking_req_1);
+
+            assertEquals(expected, response);
+        }
+    }
 
 }
