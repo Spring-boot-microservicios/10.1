@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,12 +40,29 @@ public class BookingServiceTest {
     @Test
     @DisplayName("getAvailablePlaceCount should works")
     public void getAvailablePlaceCount() {
-        when(this.roomServiceMock.findAllAvailableRooms()).thenReturn(DataDummy.default_rooms_list);
 
-        var expected = 14;
-        var result = this.bookingService.getAvailablePlaceCount();
+        // Obtener varios retornos
+        when(this.roomServiceMock.findAllAvailableRooms())
+                .thenReturn(DataDummy.default_rooms_list)
+                .thenReturn(Collections.emptyList())
+                .thenReturn(DataDummy.single_rooms_list);
 
-        assertEquals(expected, result);
+        var expected_1 = 14;
+        var expected_2 = 0;
+        var expected_3 = 5;
+
+        var result_1 = this.bookingService.getAvailablePlaceCount();
+        var result_2 = this.bookingService.getAvailablePlaceCount();
+        var result_3 = this.bookingService.getAvailablePlaceCount();
+
+//        assertEquals(expected_1, result_1);
+//        assertEquals(expected_2, result_2);
+
+        assertAll(
+            () ->  assertEquals(expected_1, result_1),
+            () ->  assertEquals(expected_2, result_2),
+            () ->  assertEquals(expected_3, result_3)
+        );
     }
 
     @Test

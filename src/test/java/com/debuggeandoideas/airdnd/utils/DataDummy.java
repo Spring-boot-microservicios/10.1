@@ -30,6 +30,10 @@ public class DataDummy {
         new RoomDto("F", 3)
     );
 
+    public static final List<RoomDto> single_rooms_list = List.of(
+        new RoomDto("A", 5)
+    );
+
     public static final BookingDto default_booking_req_1 = new BookingDto(
         "18318",
         LocalDate.of(2024,06, 10),
