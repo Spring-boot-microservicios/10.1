@@ -8,12 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +32,9 @@ public class BookingServiceTest {
 
     @Mock // Simula completamente el metodo
     private MailHelper mailHelperMock;
+
+    @Captor
+    private ArgumentCaptor<String> stringCapture;
 
     @InjectMocks
     private BookingService bookingService;
@@ -202,7 +204,14 @@ public class BookingServiceTest {
 
         verify(this.roomServiceMock, times(2)).unbookRoom(anyString());
         verify(this.bookingRepositoryMock, times(2)).deleteById(anyString());
-        verify(this.bookingRepositoryMock, times(2)).findById(anyString());
+
+
+        verify(this.bookingRepositoryMock, times(2))
+                .findById(this.stringCapture.capture());
+
+        // Evaluamos los argumentos que llamaron a las funciones en metodos void
+        System.out.println("captured arguments: " + this.stringCapture.getAllValues());
+        assertEquals(List.of(id_1, id_2), this.stringCapture.getAllValues());
     }
 
 
