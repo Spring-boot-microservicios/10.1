@@ -7,6 +7,7 @@ import com.debuggeandoideas.airdnd.utils.DataDummy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -106,5 +107,50 @@ public class BookingServiceTest {
         // Verificar y testear el metodo void
         verify(this.roomServiceMock, times(1)).bookRoom(anyString());
     }
+
+    @Test
+    @DisplayName("booking happyPath should works")
+    public void bookingHappyPath() {
+        final var roomId = UUID.randomUUID().toString();
+
+        // No se llama el metodo real - 100% mock
+        doReturn(DataDummy.default_rooms_list.stream().findFirst().get())
+                .when(this.roomServiceMock).findAvailableRoom(DataDummy.default_booking_req_1);
+
+        doReturn(roomId).when(this.bookingRepositoryMock).save(DataDummy.default_booking_req_1);
+
+        // Llamar a metodos void
+        doNothing()
+                .when(this.roomServiceMock).bookRoom(anyString());
+
+        var result = this.bookingService.booking(DataDummy.default_booking_req_1);
+
+        assertEquals(roomId, result);
+
+        // Verificamos que los metodos se mandaron a llamar
+        // times() // para saber el numero de veces que se debe llamar el metodo
+        verify(this.roomServiceMock, times(1)).findAvailableRoom(any(BookingDto.class));
+        verify(this.bookingRepositoryMock, times(1)).save(any(BookingDto.class));
+
+        // Verificar y testear el metodo void
+        verify(this.roomServiceMock, times(1)).bookRoom(anyString());
+    }
+
+    @Test
+    @DisplayName("booking unhappyPath should works")
+    public void bookingUnHappyPath() {
+        final var roomId = UUID.randomUUID().toString();
+
+        doReturn(DataDummy.default_rooms_list.stream().findFirst().get())
+                .when(this.roomServiceMock).findAvailableRoom(DataDummy.default_booking_req_3);
+
+        doThrow(new IllegalArgumentException("Max 3 guest"))
+                .when(this.paymentServiceMock).pay(any(BookingDto.class), anyDouble());
+
+        Executable executable = () -> this.bookingService.booking(DataDummy.default_booking_req_3);
+
+        assertThrows(IllegalArgumentException.class, executable);
+    }
+
 
 }

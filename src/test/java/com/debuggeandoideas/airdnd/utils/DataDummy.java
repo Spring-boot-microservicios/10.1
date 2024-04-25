@@ -46,4 +46,12 @@ public class DataDummy {
         false
     );
 
+    public static final BookingDto default_booking_req_3 = new BookingDto(
+        "2343edwq",
+        LocalDate.of(2024,06, 10),
+        LocalDate.of(2024,06, 26),
+        2,
+        true
+    );
+
 }
