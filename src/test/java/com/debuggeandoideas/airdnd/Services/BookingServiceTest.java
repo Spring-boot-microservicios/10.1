@@ -178,5 +178,32 @@ public class BookingServiceTest {
         assertThrows(IllegalArgumentException.class, executable);
     }
 
+    @Test
+    @DisplayName("unbook should works")
+    public void unBook() {
+        String id_1 = "id1";
+        String id_2 = "id2";
+
+        BookingDto bookingResp_1 = DataDummy.default_booking_req_1;
+        bookingResp_1.setRoom(DataDummy.default_rooms_list.get(3));
+
+        BookingDto bookingResp_2 = DataDummy.default_booking_req_2;
+        bookingResp_2.setRoom(DataDummy.default_rooms_list.get(4));
+
+        when(this.bookingRepositoryMock.findById(anyString()))
+                .thenReturn(bookingResp_1)
+                .thenReturn(bookingResp_2);
+
+        doNothing().when(this.roomServiceMock).unbookRoom(anyString());
+        doNothing().when(this.bookingRepositoryMock).deleteById(anyString());
+
+        this.bookingService.unbook(id_1);
+        this.bookingService.unbook(id_2);
+
+        verify(this.roomServiceMock, times(2)).unbookRoom(anyString());
+        verify(this.bookingRepositoryMock, times(2)).deleteById(anyString());
+        verify(this.bookingRepositoryMock, times(2)).findById(anyString());
+    }
+
 
 }
